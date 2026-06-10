@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire Ennéagramme</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple-50: #EEEDFE;
+    --purple-200: #AFA9EC;
+    --purple-400: #7F77DD;
+    --purple-600: #534AB7;
+    --purple-800: #3C3489;
+    --purple-900: #26215C;
+    --gray-50: #F7F7F5;
+    --gray-100: #EFEFEB;
+    --gray-200: #DDDDD8;
+    --gray-400: #888780;
+    --gray-700: #444441;
+    --gray-900: #1A1A19;
+    --text-primary: #1A1A19;
+    --text-secondary: #5F5E5A;
+    --text-hint: #888780;
+    --bg-page: #F4F3EF;
+    --bg-card: #FFFFFF;
+    --bg-secondary: #F0EFEB;
+    --border: #DDDDD8;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    max-width: 520px;
+  }
+
+  .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--purple-400);
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .progress-wrap {
+    margin-bottom: 1.75rem;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-hint);
+    letter-spacing: 0.3px;
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--purple-400);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .question {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.75rem;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: var(--bg-card);
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+  }
+
+  .opt:hover {
+    border-color: var(--purple-200);
+    background: var(--purple-50);
+  }
+
+  .opt.selected {
+    border-color: var(--purple-400);
+    background: var(--purple-50);
+  }
+
+  .opt-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-200);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s;
+  }
+
+  .opt.selected .opt-dot {
+    border-color: var(--purple-400);
+    background: var(--purple-400);
+  }
+
+  .opt.selected .opt-dot::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    display: block;
+  }
+
+  .opt-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .opt.selected .opt-text {
+    color: var(--purple-800);
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-prev {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .btn-prev:hover { border-color: var(--gray-400); }
+  .btn-prev:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-next {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    background: var(--purple-400);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 22px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+
+  .btn-next:hover { background: var(--purple-600); }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Result */
+  .result-hero {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .type-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--purple-400);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .result-name {
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+
+  .result-tagline {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .m-cell {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+
+  .m-label {
+    font-size: 11px;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 5px;
+  }
+
+  .m-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .m-full {
+    grid-column: 1 / -1;
+  }
+
+  .scores-title {
+    font-size: 12px;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+
+  .score-name {
+    font-size: 13px;
+    color: var(--text-secondary);
+    width: 150px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .score-track {
+    flex: 1;
+    height: 5px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--purple-200);
+    transition: width 0.7s ease;
+  }
+
+  .score-bar.top { background: var(--purple-400); }
+
+  .score-num {
+    font-size: 12px;
+    color: var(--text-hint);
+    width: 20px;
+    text-align: right;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-restart {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-restart:hover { border-color: var(--gray-400); }
+
+  .footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-hint);
+    max-width: 400px;
+  }
+
+  @media (max-width: 500px) {
+    .card { padding: 1.25rem; }
+    .matrix { grid-template-columns: 1fr; }
+    .m-full { grid-column: 1; }
+    .score-name { width: 110px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-mark">9</div>
+  <h1>Découvre ton ennéatype</h1>
+  <p>10 questions pour mieux te comprendre.<br>Tes résultats sont confidentiels et partagés avec ton coach.</p>
+</div>
+
+<div class="card" id="app"></div>
+
+<div class="footer">
+  Questionnaire basé sur l'ennéagramme — outil de développement personnel.<br>
+  Ce test est indicatif, non diagnostique.
+</div>
+
+<script>
+const questions = [
+  { q: "Lorsque vous faites une erreur, votre première réaction est de…", opts: [
+    {t:"Vous critiquer intérieurement et chercher à vous améliorer", types:[1,6]},
+    {t:"Vous demander comment les autres le perçoivent", types:[2,3]},
+    {t:"Analyser ce qui a déraillé pour comprendre", types:[5,4]},
+    {t:"Passer à autre chose rapidement et avancer", types:[7,8]},
+    {t:"Chercher du soutien ou un avis extérieur", types:[9,2]}
+  ]},
+  { q: "Dans un groupe, vous vous sentez le plus à l'aise quand…", opts: [
+    {t:"On reconnaît votre expertise ou vos compétences", types:[3,5]},
+    {t:"Vous pouvez aider et prendre soin des autres", types:[2,9]},
+    {t:"L'atmosphère est harmonieuse et sans conflits", types:[9,1]},
+    {t:"Vous pouvez mener ou influencer les décisions", types:[8,3]},
+    {t:"Vous avez la liberté d'exprimer vos idées", types:[4,7]}
+  ]},
+  { q: "Ce qui vous pèse le plus, c'est…", opts: [
+    {t:"Sentir que vous n'êtes pas à la hauteur des attentes", types:[1,3]},
+    {t:"Vous sentir invisible ou non reconnu·e", types:[2,4]},
+    {t:"Perdre le contrôle d'une situation", types:[8,6]},
+    {t:"Vous sentir coincé·e ou sans liberté", types:[7,4]},
+    {t:"Le conflit ou la tension avec les autres", types:[9,2]}
+  ]},
+  { q: "Comment décririez-vous votre relation à vos émotions ?", opts: [
+    {t:"Je les vis intensément et les exprime clairement", types:[4,8]},
+    {t:"Je les gère rationnellement, parfois je les mets de côté", types:[5,1]},
+    {t:"Je les ressens mais je les cache souvent", types:[3,9]},
+    {t:"Je suis très attentif·ve aux émotions des autres", types:[2,6]},
+    {t:"Je rebondis vite, je ne m'y attarde pas", types:[7,3]}
+  ]},
+  { q: "Face à un conflit, vous avez tendance à…", opts: [
+    {t:"Le confronter directement pour le résoudre", types:[8,1]},
+    {t:"Chercher un compromis qui convient à tous", types:[9,2]},
+    {t:"Vous retirer pour analyser la situation seul·e", types:[5,4]},
+    {t:"Vous demander si vous avez fait quelque chose de mal", types:[6,2]},
+    {t:"Minimiser ou éviter le conflit", types:[9,7]}
+  ]},
+  { q: "Votre moteur principal dans le travail ou les projets, c'est…", opts: [
+    {t:"Être efficace et atteindre des résultats visibles", types:[3,8]},
+    {t:"Bien faire les choses, sans erreur", types:[1,6]},
+    {t:"Comprendre en profondeur, aller au fond des choses", types:[5,4]},
+    {t:"Contribuer au bien-être du groupe", types:[2,9]},
+    {t:"Vivre des expériences variées et stimulantes", types:[7,3]}
+  ]},
+  { q: "Quelle peur vous parle le plus ?", opts: [
+    {t:"Être imparfait·e ou dans l'erreur", types:[1]},
+    {t:"Ne pas être aimé·e ou nécessaire", types:[2]},
+    {t:"Échouer ou perdre la valeur aux yeux des autres", types:[3]},
+    {t:"Ne pas avoir d'identité propre ou être banal·e", types:[4]},
+    {t:"Être envahi·e ou incompétent·e", types:[5]},
+    {t:"Manquer de soutien ou être trahi·e", types:[6]},
+    {t:"Souffrir ou être privé·e de bonnes expériences", types:[7]},
+    {t:"Être contrôlé·e ou vulnérable", types:[8]},
+    {t:"Le conflit ou la séparation des proches", types:[9]}
+  ]},
+  { q: "Les autres vous décrivent souvent comme…", opts: [
+    {t:"Quelqu'un de rigoureux·se et de principe", types:[1,6]},
+    {t:"Quelqu'un de chaleureux·se et serviable", types:[2,9]},
+    {t:"Quelqu'un de dynamique et ambitieux·se", types:[3,8]},
+    {t:"Quelqu'un de créatif·ve et profond·e", types:[4,5]},
+    {t:"Quelqu'un de loyal·e et prudent·e", types:[6,1]},
+    {t:"Quelqu'un d'enthousiaste et curieux·se", types:[7,3]}
+  ]},
+  { q: "En période de stress, vous avez tendance à…", opts: [
+    {t:"Devenir plus rigide, exigeant·e envers vous-même", types:[1,6]},
+    {t:"Chercher encore plus à plaire et aider", types:[2,3]},
+    {t:"Vous isoler et surinvestir dans vos pensées", types:[5,4]},
+    {t:"Devenir impulsif·ve ou contrôlant·e", types:[8,3]},
+    {t:"Vous disperser ou fuir dans le plaisir", types:[7,9]}
+  ]},
+  { q: "Ce qui vous comble le plus, c'est…", opts: [
+    {t:"Avoir un impact réel et être reconnu·e", types:[3,8]},
+    {t:"Créer quelque chose d'unique et de sincère", types:[4,1]},
+    {t:"Vous sentir en sécurité et entouré·e", types:[6,2]},
+    {t:"Découvrir, explorer, apprendre sans limite", types:[7,5]},
+    {t:"Être en paix avec vous-même et les autres", types:[9,2]}
+  ]}
+];
+
+const types = {
+  1: { name:"Le Réformateur", desc:"Idéaliste, rigoureux et intègre", motivation:"Faire bien, corriger ce qui est imparfait", peur:"L'erreur, la corruption, le manque d'intégrité", besoin:"Être bon, juste et en accord avec ses valeurs", ombre:"Critique intérieure sévère, rigidité", aile:"Vers le 2 (plus empathique) ou le 9 (plus patient)" },
+  2: { name:"L'Altruiste", desc:"Chaleureux, attentionné et généreux", motivation:"Être aimé et utile aux autres", peur:"Ne pas être aimé ou nécessaire", besoin:"Se sentir indispensable et apprécié", ombre:"Dépendance affective, manipulation douce", aile:"Vers le 1 (plus exigeant) ou le 3 (plus ambitieux)" },
+  3: { name:"Le Battant", desc:"Efficace, ambitieux et orienté résultat", motivation:"Réussir et être admiré", peur:"L'échec, la honte, le manque de valeur", besoin:"Être performant et reconnu", ombre:"Image de soi déconnectée du ressenti réel", aile:"Vers le 2 (plus empathique) ou le 4 (plus créatif)" },
+  4: { name:"L'Individualiste", desc:"Créatif, profond et authentique", motivation:"Se construire une identité unique", peur:"Être banal, sans identité propre", besoin:"Être compris dans sa singularité", ombre:"Mélancolie, sentiment d'être incompris", aile:"Vers le 3 (plus actif) ou le 5 (plus analytique)" },
+  5: { name:"L'Investigateur", desc:"Analytique, indépendant et curieux", motivation:"Comprendre le monde en profondeur", peur:"L'incompétence, l'envahissement", besoin:"Savoir, maîtriser, préserver son énergie", ombre:"Retrait, difficulté à s'engager émotionnellement", aile:"Vers le 4 (plus expressif) ou le 6 (plus loyal)" },
+  6: { name:"Le Loyaliste", desc:"Fiable, loyal et prévoyant", motivation:"Trouver sécurité et soutien", peur:"L'abandon, la trahison, l'insécurité", besoin:"Se sentir soutenu et en confiance", ombre:"Anxiété chronique, doute de soi", aile:"Vers le 5 (plus analytique) ou le 7 (plus optimiste)" },
+  7: { name:"L'Épicurien", desc:"Enthousiaste, curieux et optimiste", motivation:"Vivre des expériences riches et variées", peur:"La souffrance, la privation, l'ennui", besoin:"Liberté, plaisir, stimulation constante", ombre:"Fuite de la douleur, superficialité", aile:"Vers le 6 (plus responsable) ou le 8 (plus décisif)" },
+  8: { name:"Le Chef", desc:"Fort, direct et protecteur", motivation:"Avoir le contrôle et protéger ce qui compte", peur:"La vulnérabilité, être contrôlé", besoin:"Autonomie, force, impact", ombre:"Intimidation, difficulté avec la douceur", aile:"Vers le 7 (plus joueur) ou le 9 (plus paisible)" },
+  9: { name:"Le Médiateur", desc:"Pacifique, stable et conciliateur", motivation:"Maintenir la paix intérieure et extérieure", peur:"Le conflit, la séparation", besoin:"Harmonie, calme, appartenance", ombre:"Oubli de soi, procrastination, passivité", aile:"Vers le 8 (plus affirmé) ou le 1 (plus rigoureux)" }
+};
+
+let answers = {};
+let current = 0;
+let scores = {};
+
+function render() {
+  const el = document.getElementById('app');
+  if (current < questions.length) {
+    const q = questions[current];
+    const pct = Math.round((current / questions.length) * 100);
+    el.innerHTML = `
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span class="progress-label">Question ${current+1} / ${questions.length}</span>
+          <span class="progress-label">${pct}%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="pfill" style="width:${pct}%"></div></div>
+      </div>
+      <p class="question">${q.q}</p>
+      <div class="options" id="opts"></div>
+      <div class="nav">
+        <button class="btn-prev" id="prev" onclick="go(-1)" ${current===0?'disabled':''}>← Précédent</button>
+        <button class="btn-next" id="nxt" onclick="go(1)" ${answers[current]===undefined?'disabled':''}>${current===questions.length-1?'Voir mon profil →':'Suivant →'}</button>
+      </div>
+    `;
+    const optsEl = document.getElementById('opts');
+    q.opts.forEach((o, i) => {
+      const b = document.createElement('button');
+      b.className = 'opt' + (answers[current]===i?' selected':'');
+      b.innerHTML = `<span class="opt-dot"></span><span class="opt-text">${o.t}</span>`;
+      b.onclick = () => { answers[current] = i; render(); };
+      optsEl.appendChild(b);
+    });
+  } else {
+    showResult();
+  }
+}
+
+function go(dir) {
+  if (dir === 1 && answers[current] !== undefined) {
+    if (current === questions.length - 1) { calcResult(); return; }
+    current++;
+  } else if (dir === -1 && current > 0) {
+    current--;
+  }
+  render();
+}
+
+function calcResult() {
+  const s = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  questions.forEach((q, qi) => {
+    const ans = answers[qi];
+    if (ans !== undefined) {
+      q.opts[ans].types.forEach(t => s[t] += (q.opts[ans].types.length === 1 ? 3 : 2));
+    }
+  });
+  scores = s;
+  current = questions.length;
+  showResult();
+}
+
+function showResult() {
+  const el = document.getElementById('app');
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const topType = parseInt(sorted[0][0]);
+  const max = sorted[0][1];
+  const t = types[topType];
+
+  const scoreRows = sorted.slice(0,7).map(([k,v]) => {
+    const pct = max > 0 ? Math.round((v/max)*100) : 0;
+    return `<div class="score-row">
+      <span class="score-name">Type ${k} — ${types[parseInt(k)].name}</span>
+      <div class="score-track"><div class="score-bar ${k==topType?'top':''}" style="width:${pct}%"></div></div>
+      <span class="score-num">${v}</span>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="result-hero">
+      <div class="type-circle">${topType}</div>
+      <div>
+        <div class="result-name">${t.name}</div>
+        <div class="result-tagline">${t.desc}</div>
+      </div>
+    </div>
+    <div class="matrix">
+      <div class="m-cell"><div class="m-label">Motivation profonde</div><div class="m-value">${t.motivation}</div></div>
+      <div class="m-cell"><div class="m-label">Peur centrale</div><div class="m-value">${t.peur}</div></div>
+      <div class="m-cell"><div class="m-label">Besoin fondamental</div><div class="m-value">${t.besoin}</div></div>
+      <div class="m-cell"><div class="m-label">Ombre / Point d'attention</div><div class="m-value">${t.ombre}</div></div>
+      <div class="m-cell m-full"><div class="m-label">Aile probable</div><div class="m-value">${t.aile}</div></div>
+    </div>
+    <div class="scores-title">Répartition des scores</div>
+    ${scoreRows}
+    <div class="actions">
+      <button class="btn-restart" onclick="restart()">↺ Recommencer</button>
+    </div>
+  `;
+}
+
+function restart() {
+  answers = {};
+  scores = {};
+  current = 0;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
